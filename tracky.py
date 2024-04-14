@@ -41,7 +41,6 @@ tree = bot.tree
 @bot.event
 async def on_ready():
     await tree.sync()
-    print("Done")
     print(f'Connecte en tant que {bot.user.name}')
 
 
@@ -102,7 +101,7 @@ async def dr(inte : discord.Interaction):
 
 
 @tree.command(name="search_rank", description="Avoir le rang d'un joueur")
-@app_commands.choices(region=var_tracky.regions)
+@app_commands.choices(region=var_tracky.regions_choice)
 async def sr(inte : discord.Interaction, pseudo : str, tag : str, region : app_commands.Choice[str] = 'eu'):
     
     
@@ -119,7 +118,7 @@ async def sr(inte : discord.Interaction, pseudo : str, tag : str, region : app_c
 
 
 @tree.command(name="set_pseudo", description="Sauvegarder son pseudo et son id (avec la region par défaut sur eu)")
-@app_commands.choices(region=var_tracky.regions)
+@app_commands.choices(region=var_tracky.regions_choice)
 async def sp(inte : discord.Interaction, pseudo : str, tag : str, region : app_commands.Choice[str]='eu'):
     region=region if type(region)==str else region.value
     uid = inte.user.id
@@ -221,9 +220,27 @@ async def rc(inte : discord.Interaction):
     await inte.response.send_message(embed=var_tracky.embed_wait)
 
     
-    await inte.edit_original_response(embed=var_tracky.embed_character(character))
+    await inte.edit_original_response(embed=var_tracky.random_embed_character())
     
 
+@tree.command(name="character_info", description="Donne les informations d'un personnage")
+@app_commands.choices(character=var_tracky.characters_choice)
+async def ci(inte : discord.Interaction, character : app_commands.Choice[str]):
+    
+    await inte.response.send_message(embed=var_tracky.embed_wait)
+
+    await inte.edit_original_response(embed=var_tracky.embed_by_id(character.value))
+
+
+
+@tree.command(name="set_lang", description="Change la lange")
+@app_commands.choices(lang=var_tracky.langs_choice)
+async def sl(inte : discord.Interaction, lang : app_commands.Choice[str]='fr-FR'):
+    
+    await inte.response.send_message(embed=var_tracky.embed_wait)
+
+    var_tracky.lang=lang.value
+    await inte.edit_original_response(embed=var_tracky.embed_ok)
 
 with open("key", "r") as f:
     key = f.read()
