@@ -8,13 +8,12 @@ import time
 
 from numpy import var
 
+import requests
 
 import class_tracky
 import var_tracky
 
-
-
-
+import random
 
 
 
@@ -140,7 +139,7 @@ async def sp(inte : discord.Interaction, pseudo : str, tag : str, region : app_c
             json.dump(dico_usr, f, indent=2)
         await inte.edit_original_response(content='✅')
 
-    
+
 @tree.command(name="get_rank", description="Avoir le rang d'un joueur du serveur (non spécifié=soi même)")
 async def gr(inte : discord.Interaction, membre: discord.Member = None):
     
@@ -205,18 +204,29 @@ async def tr(inte : discord.Interaction):
                 tag=dico_usr[str(uid)]["tag"]
                 region=dico_usr[str(uid)]["region"]
                 
-                
-                liste_membres.append((class_tracky.Joueur(pseudo,tag,region),user))
+                j=class_tracky.Joueur(pseudo,tag,region)
+                if j.valid: liste_membres.append((j,user))
         liste_membres.sort(reverse=True)
         res=''
         for num,player in enumerate(liste_membres):
             res+=f'{num+1}: {player[1].name} {player[0]}\n'
-        await inte.edit_original_response(content=res)
+        emb=discord.Embed(title="Top Ranks", color=0x00ff00, description=res)
+        await inte.edit_original_response(embed=emb)
     except:
-        await inte.edit_original_response(content="❌")
+        await inte.edit_original_response(embed=var_tracky.embed_error)
         raise
 
+@tree.command(name="random_character", description="Donne un personnage au hasard")
+async def rc(inte : discord.Interaction):
+    await inte.response.send_message(embed=var_tracky.embed_wait)
 
+    
+    await inte.edit_original_response(embed=var_tracky.embed_character(character))
+    
+
+
+with open("key", "r") as f:
+    key = f.read()
 
 # Démarrer le bot
-bot.run("MTA5MjE0MTA5OTk1MjM3ODAwOQ.GxozaG.6MZmWq3YhbCCf7ybT_2M01CsArQN0amcncitQI")
+bot.run(key)

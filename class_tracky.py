@@ -3,8 +3,6 @@ import discord
 import var_tracky
 
 
-
-
 ranks = ['Iron','Bronze','Silver','Gold','Platinum','Diamond','Ascendant','Immortal','Radiant']
 
 
@@ -16,7 +14,7 @@ class Joueur:
         self.pseudo=pseudo
         self.tag=tag
         self.region=region
-        self.load_rank()
+        self.valid=self.load_rank()
 
         #print(self.stats)
     
@@ -29,7 +27,13 @@ class Joueur:
     
 
     async def send_rank(self,inte):
-        await inte.edit_original_response(embed=self.embed_rank)
+        # with open('images/Radiant_Rank.png', 'rb') as f:
+        #     image_data = f.read()
+        
+        self.embed_rank.set_thumbnail(url="attachment://image.png")
+        
+        
+        await inte.edit_original_response(attachments=[self.file],embed=self.embed_rank)
         
     def load_rank(self):
         requete=f'https://api.kyroskoh.xyz/valorant/v1/mmr/{self.region}/{self.pseudo}/{self.tag}?show=combo&display=0'
@@ -41,7 +45,9 @@ class Joueur:
         while res[-1][-1] not in "0123456789":
             res[-1]=res[-1][:-1]
         res[-1]=int(res[-1])
-        print(res)
+        
+
+        if res==['Request', 'failed', 'with', 'status', 'code', 404]: return False
         self.rank=res[0]
         if self.rank=='Radiant':
             self.rr=res[1]
@@ -49,17 +55,26 @@ class Joueur:
             self.embed_rank=discord.Embed(
                 color=var_tracky.colors[self.rank],
                 title=f"**{self.pseudo}**#{self.tag}",
-                description=f" : **{self.rank} {self.rr}** RR"
+                description=f"**{self.rank} {self.rr}** RR"
             )
+
+            self.file = discord.File("images/Radiant_Rank.png", filename="image.png")
+
+            self.stats=(self.rank,self.rr)
         else:
             self.rank_num,self.rr=res[1:]
             # return self.rank,int(self.rank_num),self.rr
             self.embed_rank=discord.Embed(
                 color=var_tracky.colors[self.rank],
                 title=f"**{self.pseudo}**#{self.tag}",
-                description=f" : **{self.rank} {self.rank_num} {self.rr}** RR"
+                description=f"**{self.rank} {self.rank_num} {self.rr}** RR"
             )
+
+            self.file = discord.File(f"images/{self.rank}_{self.rank_num}_Rank.png", filename="image.png")
+            self.stats=(self.rank,self.rank_num,self.rr)
         
+
+        return True
 
     
     def __eq__(self, joueur2) -> bool:
