@@ -4,16 +4,12 @@ import json
 from discord.ext import commands
 from discord import app_commands
 from discord.utils import get
-import time
 
-from numpy import var
-
-import requests
 
 import class_tracky
 import var_tracky
 
-import random
+
 
 
 
@@ -240,6 +236,7 @@ async def sl(inte : discord.Interaction, lang : app_commands.Choice[str]='fr-FR'
     await inte.response.send_message(embed=var_tracky.embed_wait)
 
     var_tracky.lang=lang.value
+
     await inte.edit_original_response(embed=var_tracky.embed_ok)
 
 with open("key", "r") as f:

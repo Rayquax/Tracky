@@ -43,8 +43,6 @@ characters_choice=[]
 for c in requests.get(f"https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=en-US").json().get('data', []): 
     characters_choice.append(app_commands.Choice(name = c['displayName'], value = c['uuid']))
 
-
-
 ranks = ['Radiant','Immortal','Ascendant','Diamond','Platinum','Gold','Silver','Bronze','Iron']
 
 colors={
@@ -85,8 +83,8 @@ def random_embed_character():
 
 def embed_by_id(id, long=True):
     c=requests.get(f"https://valorant-api.com/v1/agents/{id}?language={lang}").json()
-    print(c)
     return embed_character(c['data'], long) if c['status']!=404 else embed_error
+
 
 def embed_character(character, long=False):
     if long:
