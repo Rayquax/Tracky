@@ -1,8 +1,9 @@
 from discord import app_commands
 import discord
 
-import requests, random
+import requests, random, json, os
 
+config_file = "config-bot.json"
 
 
 
@@ -111,4 +112,33 @@ def embed_character(character, long=False):
 
 def set_lang(language):
     lang=language
+
+def load_config():
+    global lang
+    global token
+
+    if not os.path.exists(config_file):
+        config = {
+            "lang": "fr-FR",
+            "token": ""
+        }
+        with open(config_file, "w") as f:
+            json.dump(config, f, indent=2)
+
+    else:
+        with open("config-bot.json", "r") as f:
+            config = json.load(f)
+
+    lang=config['lang']
+    token=config['token']
+
+    if token=="":
+        raise Exception("Please enter your TOKEN in config-bot.json")
+
+    if lang not in [c.value for c in langs_choice]:
+        raise Exception("Please enter a valid language in config-bot.json")
+
+
+
+load_config()
 

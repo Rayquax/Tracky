@@ -231,7 +231,7 @@ async def ci(inte : discord.Interaction, character : app_commands.Choice[str]):
 
 @tree.command(name="set_lang", description="Change la lange")
 @app_commands.choices(lang=var_tracky.langs_choice)
-async def sl(inte : discord.Interaction, lang : app_commands.Choice[str]='fr-FR'):
+async def sl(inte : discord.Interaction, lang : app_commands.Choice[str]=var_tracky.lang):
     
     await inte.response.send_message(embed=var_tracky.embed_wait)
 
@@ -239,8 +239,8 @@ async def sl(inte : discord.Interaction, lang : app_commands.Choice[str]='fr-FR'
 
     await inte.edit_original_response(embed=var_tracky.embed_ok)
 
-with open("key", "r") as f:
-    key = f.read()
+# with open("key", "r") as f:
+#     key = f.read()
 
 # Démarrer le bot
-bot.run(key)
+bot.run(var_tracky.token)
