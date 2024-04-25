@@ -1,48 +1,28 @@
+# --- Imports discord ---
 import discord
-# import requests
-import json
 from discord.ext import commands
 from discord import app_commands
 from discord.utils import get
 
+# --- Imports tracky ---
+import class_tracky, var_tracky, var_genshin, var_global
 
-import class_tracky
-import var_tracky
-
-
-
-
-
-
-
-
-
-
-
+# --- Imports autres ---
+import json
 
 
 intents = discord.Intents.all()
-
-
 
 bot = commands.Bot(command_prefix='-', intents=intents)
 
 tree = bot.tree
 
 
-
-
-
-
 @bot.event
 async def on_ready():
     await tree.sync()
     print(f'Connecte en tant que {bot.user.name}')
-
-
-
-
-
+    print('Done')
 
 
 
@@ -73,7 +53,7 @@ async def cr(inte : discord.Interaction, separated : bool = True):
     with open('data/roles.json', "w") as f:
         json.dump(dico_serv_roles, f, indent=2)
     
-    await inte.edit_original_response(embed=var_tracky.embed_ok)
+    await inte.edit_original_response(embed=var_global.embed_ok)
 
 
 @tree.command(name="delete_roles", description="Créer les roles")
@@ -101,7 +81,7 @@ async def dr(inte : discord.Interaction):
 async def sr(inte : discord.Interaction, pseudo : str, tag : str, region : app_commands.Choice[str] = 'eu'):
     
     
-    await inte.response.send_message(embed=var_tracky.embed_wait)
+    await inte.response.send_message(embed=var_global.embed_wait)
     try:
         region=region if type(region)==str else region.value
         
@@ -119,7 +99,7 @@ async def sp(inte : discord.Interaction, pseudo : str, tag : str, region : app_c
     region=region if type(region)==str else region.value
     uid = inte.user.id
     
-    await inte.response.send_message(embed=var_tracky.embed_wait,ephemeral=True)
+    await inte.response.send_message(embed=var_global.embed_wait,ephemeral=True)
     if uid==None:
         await inte.edit_original_response("❌")
     else:
@@ -136,9 +116,9 @@ async def sp(inte : discord.Interaction, pseudo : str, tag : str, region : app_c
 
 
 @tree.command(name="get_rank", description="Avoir le rang d'un joueur du serveur (non spécifié=soi même)")
-async def gr(inte : discord.Interaction, membre: discord.Member = None):
+async def gr(inte : discord.Interaction, membre: discord.Member = None): # menmbre = None, effectue la commande sur soir + ajout du rank si possible
     
-    await inte.response.send_message("",embed=var_tracky.embed_wait)
+    await inte.response.send_message("",embed=var_global.embed_wait)
     
     try:
         
@@ -177,7 +157,7 @@ async def gr(inte : discord.Interaction, membre: discord.Member = None):
         
         
     except:
-        await inte.edit_original_response(embed=var_tracky.embed_error)
+        await inte.edit_original_response(embed=var_global.embed_error)
         raise
 
 
@@ -186,7 +166,7 @@ async def gr(inte : discord.Interaction, membre: discord.Member = None):
 async def tr(inte : discord.Interaction):
     
     
-    await inte.response.send_message(embed=var_tracky.embed_wait)
+    await inte.response.send_message(embed=var_global.embed_wait)
     try:
         with open('data/infos.json', "r") as f:
             dico_usr=json.load(f)
@@ -208,12 +188,12 @@ async def tr(inte : discord.Interaction):
         emb=discord.Embed(title="Top Ranks", color=0x00ff00, description=res)
         await inte.edit_original_response(embed=emb)
     except:
-        await inte.edit_original_response(embed=var_tracky.embed_error)
+        await inte.edit_original_response(embed=var_global.embed_error)
         raise
 
 @tree.command(name="random_character", description="Donne un personnage au hasard")
 async def rc(inte : discord.Interaction):
-    await inte.response.send_message(embed=var_tracky.embed_wait)
+    await inte.response.send_message(embed=var_global.embed_wait)
 
     
     await inte.edit_original_response(embed=var_tracky.random_embed_character())
@@ -223,7 +203,7 @@ async def rc(inte : discord.Interaction):
 @app_commands.choices(character=var_tracky.characters_choice)
 async def ci(inte : discord.Interaction, character : app_commands.Choice[str]):
     
-    await inte.response.send_message(embed=var_tracky.embed_wait)
+    await inte.response.send_message(embed=var_global.embed_wait)
 
     await inte.edit_original_response(embed=var_tracky.embed_by_id(character.value))
 
@@ -233,12 +213,27 @@ async def ci(inte : discord.Interaction, character : app_commands.Choice[str]):
 @app_commands.choices(lang=var_tracky.langs_choice)
 async def sl(inte : discord.Interaction, lang : app_commands.Choice[str]=var_tracky.lang):
     
-    await inte.response.send_message(embed=var_tracky.embed_wait)
+    await inte.response.send_message(embed=var_global.embed_wait)
 
     var_tracky.lang=lang.value
 
-    await inte.edit_original_response(embed=var_tracky.embed_ok)
+    await inte.edit_original_response(embed=var_global.embed_ok)
 
+
+@tree.command(name="genshin_character_info", description="Donne les informations d'un personnage")
+# @app_commands.choices(character=var_genshin.characters_choice)
+async def ci(inte : discord.Interaction, character : str, long : bool = False):
+    
+    await inte.response.send_message(embed=var_global.embed_wait)
+
+    await inte.edit_original_response(embed=var_genshin.embed_character(character.lower(), long))
+
+
+@tree.command(name="genshin_list", description="Donne la liste des personnages de genshin")
+async def gl(inte : discord.Interaction):
+    await inte.response.send_message(embed=var_global.embed_wait)
+
+    await inte.edit_original_response(embed=var_genshin.embed_characterlist)
 # with open("key", "r") as f:
 #     key = f.read()
 
