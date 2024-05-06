@@ -1,5 +1,5 @@
-import discord
-from discord import app_commands
+import discord # type: ignore
+from discord import app_commands # type: ignore
 
 import requests
 

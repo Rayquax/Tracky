@@ -1,8 +1,9 @@
 # --- Imports discord ---
-import discord
-from discord.ext import commands
-from discord import app_commands
-from discord.utils import get
+import discord # type: ignore
+from discord.ext import commands # type: ignore
+from discord import app_commands # type: ignore
+# from discord.utils import get # type: ignore
+
 
 # --- Imports tracky ---
 import class_tracky, var_tracky, var_genshin, var_global

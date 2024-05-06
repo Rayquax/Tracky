@@ -1,7 +1,9 @@
-from discord import app_commands
-import discord
+from discord import app_commands # type: ignore
+import discord # type: ignore
 
 import requests, random, json, os
+
+import var_global
 
 config_file = "config-bot.json"
 
@@ -70,7 +72,7 @@ def random_embed_character():
 
 def embed_by_id(id, long=True):
     c=requests.get(f"https://valorant-api.com/v1/agents/{id}?language={lang}").json()
-    return embed_character(c['data'], long) if c['status']!=404 else embed_error
+    return embed_character(c['data'], long) if c['status']!=404 else var_global.embed_error
 
 
 def embed_character(character, long=False):

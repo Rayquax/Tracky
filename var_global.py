@@ -1,4 +1,4 @@
-import discord
+import discord # type: ignore
 
 
 embed_wait=discord.Embed(
